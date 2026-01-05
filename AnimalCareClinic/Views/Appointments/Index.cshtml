@@ -1,0 +1,98 @@
+﻿@model IEnumerable<AnimalCareClinic.Models.Appointment>
+
+@{
+    ViewData["Title"] = "Appointments";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h2 class="mb-0">Appointments</h2>
+            <small class="text-muted">Scheduled visits for clinic patients.</small>
+        </div>
+
+        @* Only Admin + Secretary can create appointment *@
+        @if (User.IsInRole("Admin") || User.IsInRole("Secretary"))
+        {
+            <a asp-action="Create" class="btn btn-primary">
+                + Schedule New Appointment
+            </a>
+        }
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.AppointmentDate)</th>
+                        <th>@Html.DisplayNameFor(model => model.AppointmentTime)</th>
+                        <th>@Html.DisplayNameFor(model => model.Reason)</th>
+                        <th>Status</th>
+                        <th>Animal</th>
+                        <th>Schedule</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.AppointmentDate</td>
+                            <td>@item.AppointmentTime</td>
+                            <td>@item.Reason</td>
+
+                            <td>
+                                @* STATUS BADGES *@
+                                @if (item.Status == "Cancelled")
+                                {
+                                    <span class="badge bg-danger">Cancelled</span>
+                                }
+                                else if (item.Status == "Completed")
+                                {
+                                    <span class="badge bg-success">Completed</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-primary">Scheduled</span>
+                                }
+                            </td>
+
+                            <td>@item.Animal.AnimalId</td>
+                            <td>@item.Schedule.ScheduleId</td>
+
+                            <td class="text-end text-nowrap">
+                                <a asp-action="Details" asp-route-id="@item.AppointmentId"
+                                   class="btn btn-sm btn-outline-info me-1">Details</a>
+
+                                @* Only Admin + Secretary can modify or cancel *@
+                                @if (User.IsInRole("Admin") || User.IsInRole("Secretary"))
+                                {
+                                    <a asp-action="Edit" asp-route-id="@item.AppointmentId"
+                                       class="btn btn-sm btn-outline-secondary me-1">Edit</a>
+
+                                    @* Cancel Button (Soft delete) *@
+                                    @if (item.Status != "Cancelled")
+                                    {
+                                        <a asp-action="Cancel" asp-route-id="@item.AppointmentId"
+                                           class="btn btn-sm btn-warning me-1"
+                                           onclick="return confirm('Are you sure you want to cancel this appointment?');">
+                                            Cancel
+                                        </a>
+                                    }
+
+                                    @* Hard delete—only if needed *@
+                                    <a asp-action="Delete" asp-route-id="@item.AppointmentId"
+                                       class="btn btn-sm btn-outline-danger"
+                                       onclick="return confirm('Are you sure you want to permanently delete this appointment?');">
+                                        Delete
+                                    </a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

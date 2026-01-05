@@ -1,0 +1,116 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+
+    
+}
+
+
+
+/*add this*/
+.login-page {
+    min-height: calc(100vh - 70px); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f5f7fb;
+}
+
+.login-card {
+    background: #ffffff;
+    padding: 2rem 2.5rem;
+    border-radius: 12px;
+    max-width: 420px;
+    width: 100%;
+}
+
+    .login-card h2 {
+        font-weight: 600;
+    }
+
+    .login-card .form-control {
+        height: 44px;
+        font-size: 0.95rem;
+    }
+
+.btn-login {
+    background-color: transparent;
+    color: #333;
+    border: 2px solid #333;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+    .btn-login:hover {
+        background-color: #333;
+        color: #fff;
+        border-color: #333;
+    }
+.login-page {
+    background: #f3f4f6; 
+}
+.navbar-custom {
+    background-color: #1b2a49 !important;
+}
+
+    .navbar-custom .nav-link,
+    .navbar-custom .navbar-brand,
+    .navbar-custom .nav-link:visited {
+        color: #ffffff !important;
+    }
+
+        .navbar-custom .nav-link:hover,
+        .navbar-custom .navbar-brand:hover {
+            color: #a8c7ff !important; 
+        }
+
+.btn-primary {
+    background-color: #1b2a49 !important;
+    border-color: #1b2a49 !important;
+}
+
+    .btn-primary:hover {
+        background-color: #2d3d63 !important; 
+        border-color: #2d3d63 !important;
+    }
+
+.btn-outline-primary {
+    color: #1b2a49 !important;
+    border-color: #1b2a49 !important;
+}
+
+    .btn-outline-primary:hover {
+        background-color: #1b2a49 !important;
+        color: white !important;
+    }
+footer.footer {
+    background-color: #1b2a49;
+    color: #ffffff;
+}
+
+    footer.footer a {
+        color: #a8c7ff;
+    }
+
+        footer.footer a:hover {
+            color: #ffffff;
+        }
+

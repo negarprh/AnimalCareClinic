@@ -1,0 +1,87 @@
+﻿@model AnimalCareClinic.ViewModels.MonthlyReportViewModel
+
+@{
+    ViewData["Title"] = "Monthly Report";
+}
+
+<h1 class="mb-4">Monthly Report</h1>
+
+<form method="get" class="row g-3 mb-4">
+    <div class="col-md-2">
+        <label class="form-label">Year</label>
+        <input type="number" name="year" value="@Model.Year" class="form-control" />
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">Month</label>
+        <input type="number" name="month" value="@Model.Month" min="1" max="12" class="form-control" />
+    </div>
+    <div class="col-md-2 align-self-end">
+        <button type="submit" class="btn btn-primary">Refresh</button>
+    </div>
+</form>
+
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <h5 class="card-title">Total Appointments</h5>
+                <p class="display-6">@Model.TotalAppointments</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <h5 class="card-title">Booked</h5>
+                <p class="display-6 text-info">@Model.BookedCount</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <h5 class="card-title">Cancelled</h5>
+                <p class="display-6 text-danger">@Model.CancelledCount</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <h5 class="card-title">Completed</h5>
+                <p class="display-6 text-success">@Model.CompletedCount</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3 class="mt-4 mb-3">Veterinarian Workload (@Model.Month/@Model.Year)</h3>
+
+<table class="table table-striped table-bordered">
+    <thead class="table-light">
+        <tr>
+            <th>Veterinarian</th>
+            <th class="text-end">Visits</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.VetWorkloads != null && Model.VetWorkloads.Any())
+        {
+            foreach (var item in Model.VetWorkloads)
+            {
+                <tr>
+                    <td>@item.VeterinarianName</td>
+                    <td class="text-end">@item.VisitCount</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="2" class="text-center text-muted">
+                    No visits for this month.
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

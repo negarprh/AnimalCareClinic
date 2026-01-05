@@ -1,0 +1,11 @@
+Admin:
+username: admin1
+password: admin123
+
+Sec:
+username: sec1
+password: sec123
+
+Vet
+username: vet1
+password: vet123

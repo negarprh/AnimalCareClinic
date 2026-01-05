@@ -1,0 +1,93 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="container mt-4">
+
+    <!-- Hero section: main welcome message -->
+    <div class="text-center mb-4">
+        <h1 class="display-4 mb-2">Welcome to Animal-Care Veterinary Clinic</h1>
+        <p class="lead text-muted">
+            Manage owners, animals, veterinarians, schedules, and appointments in one place.
+        </p>
+<div class="position-relative d-inline-block my-3">
+    <img src="~/images/clinic-banner.jpg"
+         class="img-fluid rounded shadow-sm"
+         style="max-height: 300px; width: 100%; object-fit: cover;" />
+
+            @* Overlay button (centered on image) *@
+            @if (!User.Identity.IsAuthenticated)
+            {
+            <a asp-controller="Account" asp-action="Login"
+               class="btn btn-primary btn-lg position-absolute top-50 start-50 translate-middle shadow">
+                Get Started – Login
+            </a>
+            }
+            else
+            {
+            <div class="position-absolute top-50 start-50 translate-middle">
+                <a asp-controller="Animals" asp-action="Index" class="btn btn-primary btn-lg me-2 shadow">
+                    Go to Animals
+                </a>
+                <a asp-controller="Appointments" asp-action="Index" class="btn btn-outline-light btn-lg shadow">
+                    View Appointments
+                </a>
+            </div>
+            }
+</div>
+
+        <p class="mt-3 text-muted small">
+            Animal-Care Veterinary Clinic – Database Script.<br />
+            Team: Negar Pirasteh • Betty Dang • Hope Jeanine Ukundimana • Ngoc Yen Nhi Pham.
+        </p>
+    </div>
+
+    <hr />
+
+    <!-- Feature cards: main modules of the system -->
+    <div class="row text-center mt-4">
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title">Animals & Owners</h4>
+                    <p class="card-text text-muted">
+                        Register new pets and link them to their owners. Keep track of basic information
+                        such as age, species, and medical history.
+                    </p>
+                    <a asp-controller="Animals" asp-action="Index" class="btn btn-sm btn-outline-primary">
+                        Manage Animals
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title">Appointments</h4>
+                    <p class="card-text text-muted">
+                        Schedule, update, and review appointments for each animal based on the clinic schedule.
+                    </p>
+                    <a asp-controller="Appointments" asp-action="Index" class="btn btn-sm btn-outline-primary">
+                        View Appointments
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title">Veterinarians & Visits</h4>
+                    <p class="card-text text-muted">
+                        Veterinarians can record diagnoses, treatments, and prescriptions
+                        in the visit history for each patient.
+                    </p>
+                    <a asp-controller="VisitHistories" asp-action="Index" class="btn btn-sm btn-outline-primary">
+                        Visit History
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
