@@ -1,71 +1,75 @@
-﻿@model IEnumerable<AnimalCareClinic.Models.Animal>
+@model IEnumerable<AnimalCareClinic.Models.Animal>
 
 @{
     ViewData["Title"] = "Animals";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
+<div class="page">
+    <div class="page-header">
         <div>
-            <h2 class="mb-0">Animals</h2>
-            <small class="text-muted">Current registered animals in the clinic.</small>
+            <h1 class="page-title">Animals</h1>
+            <p class="page-subtitle">Current registered animals in the clinic.</p>
         </div>
 
-        @* Chỉ Admin + Secretary mới được tạo Animal *@
-        @if (User.IsInRole("Admin") || User.IsInRole("Secretary"))
-        {
+        <div class="page-actions">
+            @* Ch? Admin + Secretary m?i du?c t?o Animal *@
+            @if (User.IsInRole("Admin") || User.IsInRole("Secretary"))
+            {
                 <a asp-action="Create" class="btn btn-primary">
                     + Add New Animal
                 </a>
-        }
+            }
+        </div>
     </div>
 
     <div class="card shadow-sm">
         <div class="card-body p-0">
-            <table class="table table-hover mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th>@Html.DisplayNameFor(model => model.Name)</th>
-                        <th>@Html.DisplayNameFor(model => model.Species)</th>
-                        <th>@Html.DisplayNameFor(model => model.Age)</th>
-                        <th>@Html.DisplayNameFor(model => model.Gender)</th>
-                        <th>@Html.DisplayNameFor(model => model.MedicalHistory)</th>
-                        <th>Owner</th>
-                        <th class="text-end">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>@Html.DisplayNameFor(model => model.Name)</th>
+                            <th>@Html.DisplayNameFor(model => model.Species)</th>
+                            <th>@Html.DisplayNameFor(model => model.Age)</th>
+                            <th>@Html.DisplayNameFor(model => model.Gender)</th>
+                            <th>@Html.DisplayNameFor(model => model.MedicalHistory)</th>
+                            <th>Owner</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
                             <tr>
                                 <td>@Html.DisplayFor(modelItem => item.Name)</td>
                                 <td>@Html.DisplayFor(modelItem => item.Species)</td>
                                 <td>@Html.DisplayFor(modelItem => item.Age)</td>
                                 <td>@Html.DisplayFor(modelItem => item.Gender)</td>
                                 <td>@Html.DisplayFor(modelItem => item.MedicalHistory)</td>
-                                <td>@Html.DisplayFor(modelItem => item.Owner.OwnerId)</td>
+                                <td>@item.Owner.DisplayName</td>
                                 <td class="text-end text-nowrap">
-                                @* Ai vào được trang này cũng xem Details được *@
+                                    @* Ai v…o du?c trang n…y cung xem Details du?c *@
                                     <a asp-action="Details" asp-route-id="@item.AnimalId"
                                        class="btn btn-sm btn-outline-info me-1">Details</a>
 
-                                @* Chỉ Admin + Secretary mới được Edit/Delete *@
-                                @if (User.IsInRole("Admin") || User.IsInRole("Secretary"))
-                                {
-                                            <a asp-action="Edit" asp-route-id="@item.AnimalId"
-                                               class="btn btn-sm btn-outline-secondary me-1">Edit</a>
+                                    @* Ch? Admin + Secretary m?i du?c Edit/Delete *@
+                                    @if (User.IsInRole("Admin") || User.IsInRole("Secretary"))
+                                    {
+                                        <a asp-action="Edit" asp-route-id="@item.AnimalId"
+                                           class="btn btn-sm btn-outline-secondary me-1">Edit</a>
 
-                                            <a asp-action="Delete" asp-route-id="@item.AnimalId"
-                                               class="btn btn-sm btn-outline-danger"
-                                               onclick="return confirm('Are you sure you want to delete this animal?');">
-                                                Delete
-                                            </a>
-                                }
+                                        <a asp-action="Delete" asp-route-id="@item.AnimalId"
+                                           class="btn btn-sm btn-outline-danger"
+                                           onclick="return confirm('Are you sure you want to delete this animal?');">
+                                            Delete
+                                        </a>
+                                    }
                                 </td>
                             </tr>
-                    }
-                </tbody>
-            </table>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

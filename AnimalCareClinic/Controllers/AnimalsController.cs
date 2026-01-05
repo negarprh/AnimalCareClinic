@@ -60,7 +60,10 @@ namespace AnimalCareClinic.Controllers
         public IActionResult Create()
         {
             // dropdown with owners
-            ViewData["OwnerId"] = new SelectList(_context.Owners, "OwnerId", "OwnerId");
+            ViewData["OwnerId"] = new SelectList(
+                _context.Owners.OrderBy(o => o.LastName).ThenBy(o => o.FirstName),
+                "OwnerId",
+                "DisplayName");
             return View();
         }
 
@@ -76,7 +79,10 @@ namespace AnimalCareClinic.Controllers
             // simple null guard
             if (animal == null)
             {
-                ViewData["OwnerId"] = new SelectList(_context.Owners, "OwnerId", "OwnerId");
+                ViewData["OwnerId"] = new SelectList(
+                    _context.Owners.OrderBy(o => o.LastName).ThenBy(o => o.FirstName),
+                    "OwnerId",
+                    "DisplayName");
                 return View();
             }
 
@@ -114,7 +120,11 @@ namespace AnimalCareClinic.Controllers
                 return NotFound();
             }
 
-            ViewData["OwnerId"] = new SelectList(_context.Owners, "OwnerId", "OwnerId", animal.OwnerId);
+            ViewData["OwnerId"] = new SelectList(
+                _context.Owners.OrderBy(o => o.LastName).ThenBy(o => o.FirstName),
+                "OwnerId",
+                "DisplayName",
+                animal.OwnerId);
             return View(animal);
         }
 

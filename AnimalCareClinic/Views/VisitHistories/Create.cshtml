@@ -1,60 +1,91 @@
-﻿@model AnimalCareClinic.Models.VisitHistory
+@model AnimalCareClinic.Models.VisitHistory
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Add Visit";
 }
 
-<h1>Create</h1>
+<div class="page">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Add Visit</h1>
+            <p class="page-subtitle">Record diagnoses, treatments, and prescriptions.</p>
+        </div>
+        <div class="page-actions">
+            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        </div>
+    </div>
 
-<h4>VisitHistory</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="AppointmentId" class="control-label"></label>
-                <select asp-for="AppointmentId" class ="form-control" asp-items="ViewBag.AppointmentId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="AnimalId" class="control-label"></label>
-                <select asp-for="AnimalId" class ="form-control" asp-items="ViewBag.AnimalId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="VeterinarianId" class="control-label"></label>
-                <select asp-for="VeterinarianId" class ="form-control" asp-items="ViewBag.VeterinarianId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="VisitDate" class="control-label"></label>
-                <input asp-for="VisitDate" class="form-control" type="date" />
-                <span asp-validation-for="VisitDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Diagnosis" class="control-label"></label>
-                <input asp-for="Diagnosis" class="form-control" />
-                <span asp-validation-for="Diagnosis" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Treatment" class="control-label"></label>
-                <input asp-for="Treatment" class="form-control" />
-                <span asp-validation-for="Treatment" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Prescription" class="control-label"></label>
-                <input asp-for="Prescription" class="form-control" />
-                <span asp-validation-for="Prescription" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label asp-for="AppointmentId" class="form-label">Appointment</label>
+                            <select asp-for="AppointmentId" class="form-select" asp-items="ViewBag.AppointmentId"></select>
+                            <span asp-validation-for="AppointmentId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label asp-for="AnimalId" class="form-label">Animal</label>
+                            <select asp-for="AnimalId" class="form-select" asp-items="ViewBag.AnimalId"></select>
+                            <span asp-validation-for="AnimalId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label asp-for="VeterinarianId" class="form-label">Veterinarian</label>
+                            <select asp-for="VeterinarianId" class="form-select" asp-items="ViewBag.VeterinarianId"></select>
+                            <span asp-validation-for="VeterinarianId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mb-3">
+                            <label asp-for="VisitDate" class="form-label"></label>
+                            <input asp-for="VisitDate" class="form-control" type="date" />
+                            <span asp-validation-for="VisitDate" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="mb-3">
+                            <label asp-for="Diagnosis" class="form-label"></label>
+                            <textarea asp-for="Diagnosis" class="form-control" rows="3"
+                                      placeholder="Diagnosis details"></textarea>
+                            <span asp-validation-for="Diagnosis" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="mb-3">
+                            <label asp-for="Treatment" class="form-label"></label>
+                            <textarea asp-for="Treatment" class="form-control" rows="3"
+                                      placeholder="Treatment administered"></textarea>
+                            <span asp-validation-for="Treatment" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="mb-3">
+                            <label asp-for="Prescription" class="form-label"></label>
+                            <textarea asp-for="Prescription" class="form-control" rows="2"
+                                      placeholder="Prescription details (optional)"></textarea>
+                            <span asp-validation-for="Prescription" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">Create Visit</button>
+                    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

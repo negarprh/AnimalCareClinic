@@ -1,53 +1,120 @@
-﻿@model IEnumerable<AnimalCareClinic.Models.Schedule>
+@model IEnumerable<AnimalCareClinic.Models.Schedule>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Schedules";
 }
 
-<h1>Index</h1>
+<div class="page">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Schedules</h1>
+            <p class="page-subtitle">Clinic availability slots by veterinarian.</p>
+        </div>
+        <div class="page-actions">
+            <a asp-action="Create" class="btn btn-primary">+ Create Schedule</a>
+        </div>
+    </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TimeSlot)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Veterinarian)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TimeSlot)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Veterinarian.VeterinarianId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ScheduleId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ScheduleId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ScheduleId">Delete</a>
-            </td>
-        </tr>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+                <div class="search-input">
+                    <input id="scheduleSearch" class="form-control" placeholder="Search schedules..." />
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="sortScheduleDate">Sort by Date</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="sortScheduleTime">Sort by Time</button>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover table-striped mb-0" id="scheduleTable">
+                <thead class="table-light">
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.Date)</th>
+                        <th>@Html.DisplayNameFor(model => model.TimeSlot)</th>
+                        <th>@Html.DisplayNameFor(model => model.Status)</th>
+                        <th>Veterinarian</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr data-date="@item.Date.ToString("yyyy-MM-dd")" data-time="@item.TimeSlot">
+                            <td>@item.Date</td>
+                            <td>@item.TimeSlot</td>
+                            <td>
+                                @if (string.Equals(item.Status, "Available", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    <span class="badge bg-success-subtle text-success">Available</span>
+                                }
+                                else if (string.Equals(item.Status, "Booked", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    <span class="badge bg-primary-subtle text-primary">Booked</span>
+                                }
+                                else if (string.Equals(item.Status, "Completed", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    <span class="badge bg-info-subtle text-info">Completed</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary-subtle text-secondary">Unavailable</span>
+                                }
+                            </td>
+                            <td>@item.Veterinarian.DisplayName</td>
+                            <td class="text-end text-nowrap">
+                                <a asp-action="Details" asp-route-id="@item.ScheduleId"
+                                   class="btn btn-sm btn-outline-info me-1">Details</a>
+                                <a asp-action="Edit" asp-route-id="@item.ScheduleId"
+                                   class="btn btn-sm btn-outline-secondary me-1">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@item.ScheduleId"
+                                   class="btn btn-sm btn-outline-danger"
+                                   onclick="return confirm('Are you sure you want to delete this schedule?');">
+                                    Delete
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const scheduleSearch = document.getElementById('scheduleSearch');
+        const scheduleTableBody = document.querySelector('#scheduleTable tbody');
+        const scheduleRows = Array.from(scheduleTableBody.querySelectorAll('tr'));
+        let scheduleDateAsc = true;
+        let scheduleTimeAsc = true;
+
+        scheduleSearch?.addEventListener('input', () => {
+            const term = scheduleSearch.value.toLowerCase();
+            scheduleRows.forEach(row => {
+                row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+            });
+        });
+
+        document.getElementById('sortScheduleDate')?.addEventListener('click', () => {
+            scheduleRows.sort((a, b) => {
+                const aDate = a.dataset.date || '';
+                const bDate = b.dataset.date || '';
+                return scheduleDateAsc ? aDate.localeCompare(bDate) : bDate.localeCompare(aDate);
+            });
+            scheduleDateAsc = !scheduleDateAsc;
+            scheduleRows.forEach(row => scheduleTableBody.appendChild(row));
+        });
+
+        document.getElementById('sortScheduleTime')?.addEventListener('click', () => {
+            scheduleRows.sort((a, b) => {
+                const aTime = a.dataset.time || '';
+                const bTime = b.dataset.time || '';
+                return scheduleTimeAsc ? aTime.localeCompare(bTime) : bTime.localeCompare(aTime);
+            });
+            scheduleTimeAsc = !scheduleTimeAsc;
+            scheduleRows.forEach(row => scheduleTableBody.appendChild(row));
+        });
+    </script>
 }
-    </tbody>
-</table>

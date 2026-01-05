@@ -1,28 +1,41 @@
-﻿@model IEnumerable<AnimalCareClinic.Models.Appointment>
+@model IEnumerable<AnimalCareClinic.Models.Appointment>
 
 @{
     ViewData["Title"] = "Appointments";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
+<div class="page">
+    <div class="page-header">
         <div>
-            <h2 class="mb-0">Appointments</h2>
-            <small class="text-muted">Scheduled visits for clinic patients.</small>
+            <h1 class="page-title">Appointments</h1>
+            <p class="page-subtitle">Scheduled visits for clinic patients.</p>
         </div>
 
-        @* Only Admin + Secretary can create appointment *@
-        @if (User.IsInRole("Admin") || User.IsInRole("Secretary"))
-        {
-            <a asp-action="Create" class="btn btn-primary">
-                + Schedule New Appointment
-            </a>
-        }
+        <div class="page-actions">
+            @* Only Admin + Secretary can create appointment *@
+            @if (User.IsInRole("Admin") || User.IsInRole("Secretary"))
+            {
+                <a asp-action="Create" class="btn btn-primary">
+                    + Schedule New Appointment
+                </a>
+            }
+        </div>
     </div>
 
     <div class="card shadow-sm">
-        <div class="card-body p-0">
-            <table class="table table-hover mb-0">
+        <div class="card-body">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+                <div class="search-input">
+                    <input id="appointmentSearch" class="form-control" placeholder="Search appointments..." />
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="sortAppointmentDate">Sort by Date</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="sortAppointmentTime">Sort by Time</button>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover table-striped mb-0" id="appointmentTable">
                 <thead class="table-light">
                     <tr>
                         <th>@Html.DisplayNameFor(model => model.AppointmentDate)</th>
@@ -37,51 +50,49 @@
                 <tbody>
                     @foreach (var item in Model)
                     {
-                        <tr>
+                        <tr data-date="@item.AppointmentDate.ToString("yyyy-MM-dd")" data-time="@item.AppointmentTime.ToString("HH:mm")">
                             <td>@item.AppointmentDate</td>
                             <td>@item.AppointmentTime</td>
                             <td>@item.Reason</td>
-
                             <td>
-                                @* STATUS BADGES *@
-                                @if (item.Status == "Cancelled")
+                                @if (string.Equals(item.Status, "Cancelled", StringComparison.OrdinalIgnoreCase))
                                 {
-                                    <span class="badge bg-danger">Cancelled</span>
+                                    <span class="badge bg-danger-subtle text-danger">Cancelled</span>
                                 }
-                                else if (item.Status == "Completed")
+                                else if (string.Equals(item.Status, "Completed", StringComparison.OrdinalIgnoreCase))
                                 {
-                                    <span class="badge bg-success">Completed</span>
+                                    <span class="badge bg-success-subtle text-success">Completed</span>
                                 }
                                 else
                                 {
-                                    <span class="badge bg-primary">Scheduled</span>
+                                    <span class="badge bg-primary-subtle text-primary">Booked</span>
                                 }
                             </td>
-
-                            <td>@item.Animal.AnimalId</td>
-                            <td>@item.Schedule.ScheduleId</td>
-
+                            <td>@item.Animal.DisplayName</td>
+                            <td>@item.Schedule.DisplayName</td>
                             <td class="text-end text-nowrap">
                                 <a asp-action="Details" asp-route-id="@item.AppointmentId"
                                    class="btn btn-sm btn-outline-info me-1">Details</a>
 
-                                @* Only Admin + Secretary can modify or cancel *@
                                 @if (User.IsInRole("Admin") || User.IsInRole("Secretary"))
                                 {
                                     <a asp-action="Edit" asp-route-id="@item.AppointmentId"
                                        class="btn btn-sm btn-outline-secondary me-1">Edit</a>
 
-                                    @* Cancel Button (Soft delete) *@
-                                    @if (item.Status != "Cancelled")
+                                    @if (string.Equals(item.Status, "Booked", StringComparison.OrdinalIgnoreCase))
                                     {
+                                        <a asp-action="Complete" asp-route-id="@item.AppointmentId"
+                                           class="btn btn-sm btn-outline-success me-1"
+                                           onclick="return confirm('Mark this appointment as completed?');">
+                                            Complete
+                                        </a>
                                         <a asp-action="Cancel" asp-route-id="@item.AppointmentId"
                                            class="btn btn-sm btn-warning me-1"
-                                           onclick="return confirm('Are you sure you want to cancel this appointment?');">
+                                           onclick="return confirm('Cancel this appointment and free the slot?');">
                                             Cancel
                                         </a>
                                     }
 
-                                    @* Hard delete—only if needed *@
                                     <a asp-action="Delete" asp-route-id="@item.AppointmentId"
                                        class="btn btn-sm btn-outline-danger"
                                        onclick="return confirm('Are you sure you want to permanently delete this appointment?');">
@@ -96,3 +107,40 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        const appointmentSearch = document.getElementById('appointmentSearch');
+        const appointmentTableBody = document.querySelector('#appointmentTable tbody');
+        const appointmentRows = Array.from(appointmentTableBody.querySelectorAll('tr'));
+        let appointmentDateAsc = true;
+        let appointmentTimeAsc = true;
+
+        appointmentSearch?.addEventListener('input', () => {
+            const term = appointmentSearch.value.toLowerCase();
+            appointmentRows.forEach(row => {
+                row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+            });
+        });
+
+        document.getElementById('sortAppointmentDate')?.addEventListener('click', () => {
+            appointmentRows.sort((a, b) => {
+                const aDate = a.dataset.date || '';
+                const bDate = b.dataset.date || '';
+                return appointmentDateAsc ? aDate.localeCompare(bDate) : bDate.localeCompare(aDate);
+            });
+            appointmentDateAsc = !appointmentDateAsc;
+            appointmentRows.forEach(row => appointmentTableBody.appendChild(row));
+        });
+
+        document.getElementById('sortAppointmentTime')?.addEventListener('click', () => {
+            appointmentRows.sort((a, b) => {
+                const aTime = a.dataset.time || '';
+                const bTime = b.dataset.time || '';
+                return appointmentTimeAsc ? aTime.localeCompare(bTime) : bTime.localeCompare(aTime);
+            });
+            appointmentTimeAsc = !appointmentTimeAsc;
+            appointmentRows.forEach(row => appointmentTableBody.appendChild(row));
+        });
+    </script>
+}

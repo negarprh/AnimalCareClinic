@@ -1,52 +1,193 @@
-﻿@{
+@model AnimalCareClinic.ViewModels.HomeDashboardViewModel
+
+@{
     ViewData["Title"] = "Home";
+    var isAuthenticated = User.Identity?.IsAuthenticated == true;
 }
 
-<div class="container mt-4">
+<div class="page">
+    <div class="card shadow-sm hero-card">
+        <div class="row g-0 align-items-stretch">
+            <div class="col-lg-6">
+                <div class="card-body h-100 d-flex flex-column justify-content-center">
+                    <span class="text-uppercase fw-semibold text-muted small">Animal Care Clinic</span>
+                    <h1 class="page-title mt-2">Welcome to Animal-Care Veterinary Clinic</h1>
+                    <p class="page-subtitle">
+                        Manage owners, animals, veterinarians, schedules, and appointments in one place.
+                    </p>
 
-    <!-- Hero section: main welcome message -->
-    <div class="text-center mb-4">
-        <h1 class="display-4 mb-2">Welcome to Animal-Care Veterinary Clinic</h1>
-        <p class="lead text-muted">
-            Manage owners, animals, veterinarians, schedules, and appointments in one place.
-        </p>
-<div class="position-relative d-inline-block my-3">
-    <img src="~/images/clinic-banner.jpg"
-         class="img-fluid rounded shadow-sm"
-         style="max-height: 300px; width: 100%; object-fit: cover;" />
+                    <div class="d-flex flex-wrap gap-2 mt-3">
+                        @if (!isAuthenticated)
+                        {
+                            <a asp-controller="Account" asp-action="Login"
+                               class="btn btn-primary btn-lg">
+                                Get Started - Login
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-controller="Animals" asp-action="Index" class="btn btn-primary btn-lg">
+                                Go to Animals
+                            </a>
+                            <a asp-controller="Appointments" asp-action="Index" class="btn btn-secondary btn-lg">
+                                View Appointments
+                            </a>
+                        }
+                    </div>
 
-            @* Overlay button (centered on image) *@
-            @if (!User.Identity.IsAuthenticated)
-            {
-            <a asp-controller="Account" asp-action="Login"
-               class="btn btn-primary btn-lg position-absolute top-50 start-50 translate-middle shadow">
-                Get Started – Login
-            </a>
-            }
-            else
-            {
-            <div class="position-absolute top-50 start-50 translate-middle">
-                <a asp-controller="Animals" asp-action="Index" class="btn btn-primary btn-lg me-2 shadow">
-                    Go to Animals
-                </a>
-                <a asp-controller="Appointments" asp-action="Index" class="btn btn-outline-light btn-lg shadow">
-                    View Appointments
-                </a>
+                    <p class="text-muted small mt-4">
+                        Animal-Care Veterinary Clinic - Database Script.
+                        Team: Negar Pirasteh, Betty Dang, Hope Jeanine Ukundimana, Ngoc Yen Nhi Pham.
+                    </p>
+                </div>
             </div>
-            }
-</div>
-
-        <p class="mt-3 text-muted small">
-            Animal-Care Veterinary Clinic – Database Script.<br />
-            Team: Negar Pirasteh • Betty Dang • Hope Jeanine Ukundimana • Ngoc Yen Nhi Pham.
-        </p>
+            <div class="col-lg-6">
+                <img src="~/images/clinic-banner.jpg"
+                     alt="Animal care clinic team with pets"
+                     class="img-fluid w-100 h-100 hero-media" />
+            </div>
+        </div>
     </div>
 
-    <hr />
+    @if (isAuthenticated)
+    {
+        if (User.IsInRole("Admin"))
+        {
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <h6 class="text-muted">Total Animals</h6>
+                            <p class="display-6 mb-0">@Model.TotalAnimals</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <h6 class="text-muted">Total Owners</h6>
+                            <p class="display-6 mb-0">@Model.TotalOwners</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <h6 class="text-muted">Appointments</h6>
+                            <p class="display-6 mb-0">@Model.TotalAppointments</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <h6 class="text-muted">Available Slots</h6>
+                            <p class="display-6 mb-0">@Model.AvailableSlots</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    <!-- Feature cards: main modules of the system -->
-    <div class="row text-center mt-4">
-        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body d-flex flex-wrap gap-2 justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-1">Admin Shortcuts</h3>
+                        <p class="text-muted mb-0">Jump into key workflows.</p>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a asp-controller="Schedules" asp-action="Create" class="btn btn-outline-primary">Add Schedule Slot</a>
+                        <a asp-controller="Appointments" asp-action="Create" class="btn btn-outline-primary">Book Appointment</a>
+                        <a asp-controller="Reports" asp-action="Monthly" class="btn btn-primary">Monthly Report</a>
+                    </div>
+                </div>
+            </div>
+        }
+        else if (User.IsInRole("Secretary"))
+        {
+            <div class="card shadow-sm">
+                <div class="card-body d-flex flex-wrap gap-3 justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-1">Secretary Workspace</h3>
+                        <p class="text-muted mb-0">Manage today's visits and bookings quickly.</p>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a asp-controller="Owners" asp-action="Create" class="btn btn-outline-primary">Add Owner</a>
+                        <a asp-controller="Animals" asp-action="Create" class="btn btn-outline-primary">Add Animal</a>
+                        <a asp-controller="Appointments" asp-action="Create" class="btn btn-primary">Book Appointment</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <h5 class="mb-1">Available Slots</h5>
+                            <p class="display-6 mb-0">@Model.AvailableSlots</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <h5 class="mb-1">Appointments Today</h5>
+                            <p class="display-6 mb-0">@Model.TodaysAppointments.Count</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        else if (User.IsInRole("Veterinarian"))
+        {
+            <div class="card shadow-sm">
+                <div class="card-body d-flex flex-wrap gap-3 justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-1">Today's Appointments</h3>
+                        <p class="text-muted mb-0">Quick overview of visits scheduled for today.</p>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a asp-controller="Appointments" asp-action="Index" class="btn btn-outline-primary">View All Appointments</a>
+                        <a asp-controller="VisitHistories" asp-action="Create" class="btn btn-primary">Add Visit Notes</a>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Time</th>
+                                <th>Animal</th>
+                                <th>Status</th>
+                                <th>Veterinarian</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.TodaysAppointments.Any())
+                            {
+                                foreach (var appointment in Model.TodaysAppointments)
+                                {
+                                    <tr>
+                                        <td>@appointment.AppointmentTime</td>
+                                        <td>@appointment.Animal.DisplayName</td>
+                                        <td>@appointment.Status</td>
+                                        <td>@appointment.Schedule.Veterinarian.DisplayName</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted">No appointments scheduled for today.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    }
+
+    <div class="row g-3">
+        <div class="col-md-4">
             <div class="card h-100 shadow-sm">
                 <div class="card-body">
                     <h4 class="card-title">Animals & Owners</h4>
@@ -61,7 +202,7 @@
             </div>
         </div>
 
-        <div class="col-md-4 mb-3">
+        <div class="col-md-4">
             <div class="card h-100 shadow-sm">
                 <div class="card-body">
                     <h4 class="card-title">Appointments</h4>
@@ -75,7 +216,7 @@
             </div>
         </div>
 
-        <div class="col-md-4 mb-3">
+        <div class="col-md-4">
             <div class="card h-100 shadow-sm">
                 <div class="card-body">
                     <h4 class="card-title">Veterinarians & Visits</h4>

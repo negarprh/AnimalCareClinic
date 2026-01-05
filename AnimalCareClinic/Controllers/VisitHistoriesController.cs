@@ -28,7 +28,10 @@ namespace AnimalCareClinic.Controllers
         {
             var animalClinicContext = _context.VisitHistories
                 .Include(v => v.Animal)
+                .ThenInclude(a => a.Owner)
                 .Include(v => v.Appointment)
+                .ThenInclude(a => a.Animal)
+                .ThenInclude(a => a.Owner)
                 .Include(v => v.Veterinarian);
 
             return View(await animalClinicContext.ToListAsync());
@@ -47,7 +50,10 @@ namespace AnimalCareClinic.Controllers
 
             var visitHistory = await _context.VisitHistories
                 .Include(v => v.Animal)
+                .ThenInclude(a => a.Owner)
                 .Include(v => v.Appointment)
+                .ThenInclude(a => a.Animal)
+                .ThenInclude(a => a.Owner)
                 .Include(v => v.Veterinarian)
                 .FirstOrDefaultAsync(m => m.VisitId == id);
 
@@ -65,9 +71,7 @@ namespace AnimalCareClinic.Controllers
         [Authorize(Roles = "Admin,Veterinarian")]
         public IActionResult Create()
         {
-            ViewData["AnimalId"] = new SelectList(_context.Animals, "AnimalId", "AnimalId");
-            ViewData["AppointmentId"] = new SelectList(_context.Appointments, "AppointmentId", "AppointmentId");
-            ViewData["VeterinarianId"] = new SelectList(_context.Veterinarians, "VeterinarianId", "VeterinarianId");
+            PopulateVisitHistorySelectLists();
             return View();
         }
 
@@ -81,9 +85,7 @@ namespace AnimalCareClinic.Controllers
         {
             if (visitHistory == null)
             {
-                ViewData["AnimalId"] = new SelectList(_context.Animals, "AnimalId", "AnimalId");
-                ViewData["AppointmentId"] = new SelectList(_context.Appointments, "AppointmentId", "AppointmentId");
-                ViewData["VeterinarianId"] = new SelectList(_context.Veterinarians, "VeterinarianId", "VeterinarianId");
+                PopulateVisitHistorySelectLists();
                 return View();
             }
 
@@ -122,9 +124,7 @@ namespace AnimalCareClinic.Controllers
                 return NotFound();
             }
 
-            ViewData["AnimalId"] = new SelectList(_context.Animals, "AnimalId", "AnimalId", visitHistory.AnimalId);
-            ViewData["AppointmentId"] = new SelectList(_context.Appointments, "AppointmentId", "AppointmentId", visitHistory.AppointmentId);
-            ViewData["VeterinarianId"] = new SelectList(_context.Veterinarians, "VeterinarianId", "VeterinarianId", visitHistory.VeterinarianId);
+            PopulateVisitHistorySelectLists(visitHistory.AnimalId, visitHistory.AppointmentId, visitHistory.VeterinarianId);
 
             return View(visitHistory);
         }
@@ -186,7 +186,10 @@ namespace AnimalCareClinic.Controllers
 
             var visitHistory = await _context.VisitHistories
                 .Include(v => v.Animal)
+                .ThenInclude(a => a.Owner)
                 .Include(v => v.Appointment)
+                .ThenInclude(a => a.Animal)
+                .ThenInclude(a => a.Owner)
                 .Include(v => v.Veterinarian)
                 .FirstOrDefaultAsync(m => m.VisitId == id);
 
@@ -219,6 +222,28 @@ namespace AnimalCareClinic.Controllers
         private bool VisitHistoryExists(int id)
         {
             return _context.VisitHistories.Any(e => e.VisitId == id);
+        }
+
+        private void PopulateVisitHistorySelectLists(
+            int? animalId = null,
+            int? appointmentId = null,
+            int? veterinarianId = null)
+        {
+            var animals = _context.Animals
+                .Include(a => a.Owner)
+                .OrderBy(a => a.Name);
+            var appointments = _context.Appointments
+                .Include(a => a.Animal)
+                .ThenInclude(a => a.Owner)
+                .OrderBy(a => a.AppointmentDate)
+                .ThenBy(a => a.AppointmentTime);
+            var veterinarians = _context.Veterinarians
+                .OrderBy(v => v.LastName)
+                .ThenBy(v => v.FirstName);
+
+            ViewData["AnimalId"] = new SelectList(animals, "AnimalId", "DisplayName", animalId);
+            ViewData["AppointmentId"] = new SelectList(appointments, "AppointmentId", "DisplayName", appointmentId);
+            ViewData["VeterinarianId"] = new SelectList(veterinarians, "VeterinarianId", "DisplayName", veterinarianId);
         }
     }
 }

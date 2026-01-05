@@ -1,60 +1,48 @@
-﻿@model AnimalCareClinic.Models.VisitHistory
+@model AnimalCareClinic.Models.VisitHistory
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Visit Details";
 }
 
-<h1>Details</h1>
+<div class="page">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Visit Details</h1>
+            <p class="page-subtitle">Clinical record for this visit.</p>
+        </div>
+        <div class="page-actions">
+            @if (User.IsInRole("Admin") || User.IsInRole("Veterinarian"))
+            {
+                <a asp-action="Edit" asp-route-id="@Model?.VisitId" class="btn btn-outline-primary">Edit</a>
+            }
+            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        </div>
+    </div>
 
-<div>
-    <h4>VisitHistory</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.VisitDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.VisitDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Diagnosis)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Diagnosis)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Treatment)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Treatment)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Prescription)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Prescription)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Animal)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Animal.AnimalId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Appointment)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Appointment.AppointmentId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Veterinarian)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Veterinarian.VeterinarianId)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.VisitId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <dl class="row detail-list">
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.VisitDate)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.VisitDate)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Diagnosis)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Diagnosis)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Treatment)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Treatment)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Prescription)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Prescription)</dd>
+
+                <dt class="col-sm-3">Animal</dt>
+                <dd class="col-sm-9">@Model!.Animal.DisplayName</dd>
+
+                <dt class="col-sm-3">Appointment</dt>
+                <dd class="col-sm-9">@Model!.Appointment.DisplayName</dd>
+
+                <dt class="col-sm-3">Veterinarian</dt>
+                <dd class="col-sm-9">@Model!.Veterinarian.DisplayName</dd>
+            </dl>
+        </div>
+    </div>
 </div>
