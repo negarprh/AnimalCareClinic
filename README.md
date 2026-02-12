@@ -70,7 +70,7 @@ It provides the foundation for the database schema.
 ### 3. Activity Diagrams
 #### Activity 1 – Check-In → Visit → Check-Out  
 Describes the entire visit cycle from reception to billing.  
-![Activity 1](AnimalCareClinic/Documentation/Diagrams/Activity/Checkin_Visit_CheckOut_Activity.drawio.png)
+![Activity 1](AnimalCareClinic/Documentation/Diagrams/Activity/Check-In_Check-Out.drawio.png)
 
 #### Activity 2 – Register / Edit Animal  
 Creating or updating animal data linked to an owner.  
